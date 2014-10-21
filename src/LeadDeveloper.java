@@ -1,8 +1,8 @@
 
 public class LeadDeveloper extends Developer{
 
-	public LeadDeveloper(int t, int e){
-		super(t, e);
+	public LeadDeveloper(long t, int tn, int en){
+		super(t, tn, en);
 	}
 	
 	/**
@@ -10,7 +10,7 @@ public class LeadDeveloper extends Developer{
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		(new LeadDeveloper(1,1)).start();
+		//(new LeadDeveloper(1,1)).start();
 	}
 
 }

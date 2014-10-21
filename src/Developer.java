@@ -4,7 +4,7 @@ import java.util.Random;
 public class Developer extends Thread {
 	
 	private static int EIGHT_HOURS = 60*8*10;
-	private long time = 0;
+	private long startTime = 0;
 	private long timeWorked = 0;
 	
 	private Random r = new Random();
@@ -13,22 +13,58 @@ public class Developer extends Thread {
 	int empNumber;
 	Status status;
 	
-	public Developer(int t, int e){
-		teamNumber = t;
-		empNumber = e;
+	public Developer(long t, int tn, int en){
+		startTime = t;
+		teamNumber = tn;
+		empNumber = en;
 	}
 	
 	public void run(){
 		long arrivalTime = getArrivalTime();
+		long lunchStartTime = getLunchStartTime();
+		long lunchEndTime = getLunchEndTime(lunchStartTime);
+		long leaveTime = getLeavingTime(arrivalTime, lunchStartTime, lunchEndTime);
+		
+		
+		while(System.currentTimeMillis() <= (arrivalTime + startTime)){
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		printArrivalMessage(arrivalTime);
 		
-		long lunchStartTime = getLunchStartTime();
+		
+		while(System.currentTimeMillis() <= (lunchStartTime + startTime)){
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		printLunchStartMessage(lunchStartTime);
 		
-		long lunchEndTime = getLunchEndTime(lunchStartTime);
+		while(System.currentTimeMillis() <= (lunchEndTime + startTime)){
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		printLunchEndMessage(lunchEndTime);
 		
-		long leaveTime = getLeavingTime(arrivalTime, lunchStartTime, lunchEndTime);
+		while(System.currentTimeMillis() <= (leaveTime + startTime)){
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		printLeavingMessage(leaveTime);
 	}
 	
@@ -52,7 +88,6 @@ public class Developer extends Thread {
 		time += (lunchEndTime - lunchStartTime);
 		return time;
 	}
-
 
 	private String getTime(long time){
 		String zero = "";
@@ -86,7 +121,7 @@ public class Developer extends Thread {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		(new Developer(1,1)).start();
+		//(new Developer(1,2)).start();
 	}
 
 }
