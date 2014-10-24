@@ -20,7 +20,7 @@ public class Manager extends Thread{
 		
 		//Work until meeting happens
 
-		while (System.currentTimeMillis() <= morningMeetingStart + ARRIVAL_TIME) {
+		while (System.currentTimeMillis() <= morningMeetingStart ) {
 			//check for question to be answered
 			//work for 10ms
 			try {
@@ -31,7 +31,7 @@ public class Manager extends Thread{
 		}
 
 		//At 11AM Meeting
-		while (System.currentTimeMillis() <= morningMeetingEnd + ARRIVAL_TIME) {
+		while (System.currentTimeMillis() <= morningMeetingEnd ) {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedExcetion e) {
@@ -39,7 +39,7 @@ public class Manager extends Thread{
 			}
 		}
 
-		while (System.currentTimeMillis() <= Lunch + ARRIVAL_TIME) {
+		while (System.currentTimeMillis() <= Lunch ) {
 			//check for question to be answered
 			//else work for 10ms
 			try {
@@ -50,7 +50,7 @@ public class Manager extends Thread{
 		}
 		printLunchMessage(System.currentTimeMillis());
 
-		while (System.currentTimeMillis() < endLunchtime + ARRIVAL_TIME) {
+		while (System.currentTimeMillis() < endLunchtime ) {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
@@ -59,7 +59,7 @@ public class Manager extends Thread{
 		}
 		printEndLunchMessage(System.currentTimeMillis);
 
-		while (System.currentTimeMillis() <= afternoonMeetingStart + ARRIVAL_TIME) {
+		while (System.currentTimeMillis() <= afternoonMeetingStart ) {
 			//Check for question to be answered
 			//work for 10ms
 			try {
@@ -70,7 +70,7 @@ public class Manager extends Thread{
 		}
 		printAfternoonMeetingMessage(System.currentTimeMillis);
 
-		while (System.currentTimeMillis() <= groupMeetingStart + ARRIVAL_TIME) {
+		while (System.currentTimeMillis() <= groupMeetingStart ) {
 			//check for question to be answered
 			//check for 4PM (8*60*10)
 			//else work for 10ms
@@ -81,7 +81,7 @@ public class Manager extends Thread{
 			}
 		}
 
-		while (System.currentTimeMillis() < DEPARTURE_TIME + ARRIVAL_TIME) {
+		while (System.currentTimeMillis() < DEPARTURE_TIME ) {
 			//Check for question to be answered
 			try {
 				Thread.sleep(10);
