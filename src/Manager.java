@@ -57,7 +57,7 @@ public class Manager extends Thread{
 				e.printStackTrace();
 			}
 		}
-		printEndLunchMessage(System.currentTimeMillis);
+		printBackToWorkMessage(System.currentTimeMillis);
 
 		while (System.currentTimeMillis() <= afternoonMeetingStart ) {
 			//Check for question to be answered
