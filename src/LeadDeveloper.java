@@ -1,8 +1,8 @@
 
 public class LeadDeveloper extends Developer{
 
-	public LeadDeveloper(long t, int tn, int en){
-		super(t, tn, en);
+	public LeadDeveloper(Manager m,long t, int tn, int en){
+		super(m, t, tn, en);
 	}
 	
 	/**

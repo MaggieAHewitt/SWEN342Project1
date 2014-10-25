@@ -12,11 +12,13 @@ public class Developer extends Thread {
 	int teamNumber;
 	int empNumber;
 	Status status;
+	Manager man;
 	
-	public Developer(long t, int tn, int en){
+	public Developer(Manager man, long t, int tn, int en){
 		startTime = t;
 		teamNumber = tn;
 		empNumber = en;
+		this.man = man;
 	}
 	
 	public void run(){

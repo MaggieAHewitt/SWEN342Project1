@@ -1,18 +1,21 @@
+import java.util.ArrayList;
+
 public class Manager extends Thread{
 	
 	private static final long ARRIVAL_TIME = 0;
 	private static final long DEPARTURE_TIME = 9*60*10;
 	private long startTime;
-
+	private ArrayList<Integer> waiting;
+	Status status;
+	
 	public Manager(long time) {
+		waiting = new ArrayList<Integer>();
 		startTime = time;
-		Status status;
 	}
 
 	public void run() {
 		int startLunchtime = 4*60*10;
 		int endLunchtime = 5*60*10;
-		int questionTime = 10*10;
 		int morningMeetingStart = 2*60*10;
 		int morningMeetingEnd = 3*60*10;
 		int afternoonMeetingStart = 6*60*10;
@@ -24,32 +27,22 @@ public class Manager extends Thread{
 		//Work until meeting happens
 
 		while (System.currentTimeMillis() <= morningMeetingStart + startTime) {
-			//check for question to be answered
-			//work for 10ms
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			openForQuestions();
 		}
 
 		//At 11AM Meeting
 		while (System.currentTimeMillis() <= morningMeetingEnd + startTime ) {
+			this.status = Status.WORKING;
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
 		while (System.currentTimeMillis() <= startLunchtime + startTime ) {
-			//check for question to be answered
-			//else work for 10ms
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			openForQuestions();
 		}
 		printLunchMessage(System.currentTimeMillis());
 
@@ -63,52 +56,45 @@ public class Manager extends Thread{
 		printBackToWorkMessage(System.currentTimeMillis());
 
 		while (System.currentTimeMillis() <= afternoonMeetingStart + startTime ) {
-			//Check for question to be answered
-			//work for 10ms
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			openForQuestions();
 		}
 		printAfternoonMeetingMessage(System.currentTimeMillis());
 
 		while (System.currentTimeMillis() <= groupMeetingStart + startTime ) {
-			//check for question to be answered
-			//check for 4PM (8*60*10)
-			//else work for 10ms
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			openForQuestions();
 		}
 
 		while (System.currentTimeMillis() < DEPARTURE_TIME + startTime ) {
-			//Check for question to be answered
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			openForQuestions();
 		}
 
 		printDepartureMessage(DEPARTURE_TIME);
 	}
 	
-	
-	/*private long AnswerQuestion() {
-		int timeSpent = 10*10;
+	public synchronized void queue(int i) throws InterruptedException {
+		waiting.add(i);
+		System.out.println(waiting);
 	}
 	
-	private long AttendMorningMeeting() {
-		int timeSpent = 15*10;
+	private void openForQuestions() {
+		if (waiting.isEmpty()) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try{
+				System.out.println("Answering question!");
+				Thread.sleep(10*10);
+				waiting.remove(0);
+				//notify dev to go back to work
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
-
-	private long AttendLongMeeting() {
-		int 60*10;
-	}
-	*/
+	
 	private String getTime(long time){
 		String zero = "";
 		long hours = time/600;
