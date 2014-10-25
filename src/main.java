@@ -10,6 +10,7 @@ public class main {
 	
 		long time = System.currentTimeMillis();
 		
+		(new Manager(time)).start();
 		(new Developer(time,1,2)).start();
 		(new Developer(time,1,3)).start();
 		(new Developer(time,1,4)).start();
