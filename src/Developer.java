@@ -38,9 +38,13 @@ public class Developer extends Thread {
 		}
 		printArrivalMessage(arrivalTime);
 		
-		
 		while(System.currentTimeMillis() <= (lunchStartTime + startTime)){
 			try {
+				if(askQuestion()){
+					printAskingQuestionMessage(System.currentTimeMillis() - startTime);
+					Thread.sleep(100); //Sleep while the question is being answered
+					printAnsweredQuestionMessage(System.currentTimeMillis()-startTime);
+				}
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -61,6 +65,11 @@ public class Developer extends Thread {
 		
 		while(System.currentTimeMillis() <= (leaveTime + startTime)){
 			try {
+				if(askQuestion()){
+					printAskingQuestionMessage(System.currentTimeMillis() - startTime);
+					Thread.sleep(100); //Sleep while the question is being answered
+					printAnsweredQuestionMessage(System.currentTimeMillis()-startTime);
+				}
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -90,6 +99,13 @@ public class Developer extends Thread {
 		time += (lunchEndTime - lunchStartTime);
 		return time;
 	}
+	
+	private Boolean askQuestion(){
+		if(r.nextInt(100) < 20){
+			return true;
+		}
+		return false;
+	}
 
 	private String getTime(long time){
 		String zero = "";
@@ -116,7 +132,13 @@ public class Developer extends Thread {
 	}
 	private void printLeavingMessage(long time){
 		System.out.println("Developer " + teamNumber + "" + empNumber + " left the office at " + getTime(time));
-	}	
+	}
+	private void printAskingQuestionMessage(long time){
+		System.out.println("Developer " + teamNumber + "" + empNumber + " asked a question at " + getTime(time));
+	}
+	private void printAnsweredQuestionMessage(long time){
+		System.out.println("Developer " + teamNumber + "" + empNumber + " is finished asking questions at " + getTime(time));
+	}
 	
 	/**
 	 * @param args
