@@ -5,14 +5,18 @@ public class Manager extends Thread{
 	private static final long ARRIVAL_TIME = 0;
 	private static final long DEPARTURE_TIME = 9*60*10;
 	private long startTime;
+	int Devs;
 	private ArrayList<Developer> waiting;
-	private ArrayList<Integer> leadDevs;
+	private ArrayList<Developer> leadDevs;
+	private ArrayList<Developer> allDevs;
 	Status status;
 	
-	public Manager(long time) {
+	public Manager(long time, int i) {
+		Devs = i;
 		waiting = new ArrayList<Developer>();
-		leadDevs = new ArrayList<Integer>();
+		leadDevs = new ArrayList<Developer>();
 		startTime = time;
+		allDevs = new ArrayList<Developer>();
 	}
 
 	public void run() {
@@ -75,9 +79,22 @@ public class Manager extends Thread{
 		}
 		printAfternoonMeetingMessage(System.currentTimeMillis() - startTime);
 
-		while (System.currentTimeMillis() <= groupMeetingStart + startTime ) {
+		while (System.currentTimeMillis() <= groupMeetingStart + startTime || allDevs.size() < Devs) {
 			openForQuestions();
 		}
+		
+		printStatusMeetingMessage(System.currentTimeMillis() - startTime);
+		try {
+			Thread.sleep(30*10);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		while (allDevs.size() > 0) {
+			allDevs.get(0).done();
+			allDevs.remove(0);
+		}
+		printBackToWorkMessage(System.currentTimeMillis() - startTime);
 
 		while (System.currentTimeMillis() < DEPARTURE_TIME + startTime ) {
 			openForQuestions();
@@ -90,8 +107,12 @@ public class Manager extends Thread{
 		waiting.add(t);
 	}
 	
-	public synchronized void arrived(Integer i) {
+	public synchronized void arrived(Developer i) {
 		leadDevs.add(i);
+	}
+	
+	public synchronized void groupMeetingArrival(Developer d) {
+		allDevs.add(d);
 	}
 	
 	private void openForQuestions() {

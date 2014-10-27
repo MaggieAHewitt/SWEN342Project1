@@ -34,12 +34,11 @@ public class Developer extends Thread {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		printArrivalMessage(arrivalTime);
-		man.arrived(empNumber);
+		man.arrived(this);
 		
 		while(System.currentTimeMillis() <= (lunchStartTime + startTime)){
 			try {
@@ -69,6 +68,22 @@ public class Developer extends Thread {
 		}
 		printLunchEndMessage(lunchEndTime);
 		
+		while(System.currentTimeMillis() <= (8*60*10 + startTime)){
+			try {
+				if(askQuestion()){
+					printAskingQuestionMessage(System.currentTimeMillis() - startTime);
+					man.groupMeetingArrival(this);
+					while(!answered) {
+						Thread.sleep(10);
+					}
+					answered = false;
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		while(System.currentTimeMillis() <= (leaveTime + startTime)){
 			try {
 				if(askQuestion()){
@@ -88,6 +103,7 @@ public class Developer extends Thread {
 		printLeavingMessage(leaveTime);
 	}
 	
+	//Make the employee wait until called
 	public synchronized void done() {
 		answered = true;
 	}
