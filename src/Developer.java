@@ -109,6 +109,16 @@ public class Developer extends Thread {
 			}
 		}
 		
+		man.groupMeetingArrival(this);
+		while(!answered) {
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		while(System.currentTimeMillis() <= (leaveTime + startTime)){
 			try {
 				if(isLead()){
