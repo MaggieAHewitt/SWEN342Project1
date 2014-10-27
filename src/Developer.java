@@ -13,12 +13,14 @@ public class Developer extends Thread {
 	int empNumber;
 	Status status;
 	Manager man;
+	boolean answered;
 	
 	public Developer(Manager man, long t, int tn, int en){
 		startTime = t;
 		teamNumber = tn;
 		empNumber = en;
 		this.man = man;
+		answered = false;
 	}
 	
 	public void run(){
@@ -42,7 +44,11 @@ public class Developer extends Thread {
 			try {
 				if(askQuestion()){
 					printAskingQuestionMessage(System.currentTimeMillis() - startTime);
-					Thread.sleep(100); //Sleep while the question is being answered
+					man.queue(this);
+					while(!answered) {
+						Thread.sleep(10);
+					}
+					answered = false;
 					printAnsweredQuestionMessage(System.currentTimeMillis()-startTime);
 				}
 				Thread.sleep(10);
@@ -67,7 +73,11 @@ public class Developer extends Thread {
 			try {
 				if(askQuestion()){
 					printAskingQuestionMessage(System.currentTimeMillis() - startTime);
-					Thread.sleep(100); //Sleep while the question is being answered
+					man.queue(this);
+					while(!answered) {
+						Thread.sleep(10);
+					}
+					answered = false;
 					printAnsweredQuestionMessage(System.currentTimeMillis()-startTime);
 				}
 				Thread.sleep(10);
@@ -77,6 +87,10 @@ public class Developer extends Thread {
 			}
 		}
 		printLeavingMessage(leaveTime);
+	}
+	
+	public synchronized void done() {
+		answered = true;
 	}
 	
 	private long getArrivalTime(){

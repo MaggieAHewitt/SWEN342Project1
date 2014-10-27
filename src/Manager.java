@@ -5,11 +5,11 @@ public class Manager extends Thread{
 	private static final long ARRIVAL_TIME = 0;
 	private static final long DEPARTURE_TIME = 9*60*10;
 	private long startTime;
-	private ArrayList<Integer> waiting;
+	private ArrayList<Developer> waiting;
 	Status status;
 	
 	public Manager(long time) {
-		waiting = new ArrayList<Integer>();
+		waiting = new ArrayList<Developer>();
 		startTime = time;
 	}
 
@@ -29,6 +29,7 @@ public class Manager extends Thread{
 		while (System.currentTimeMillis() <= morningMeetingStart + startTime) {
 			openForQuestions();
 		}
+		printMorningMeetingMessage(System.currentTimeMillis() - startTime);
 
 		//At 11AM Meeting
 		while (System.currentTimeMillis() <= morningMeetingEnd + startTime ) {
@@ -40,11 +41,12 @@ public class Manager extends Thread{
 				e.printStackTrace();
 			}
 		}
+		printBackToWorkMessage(System.currentTimeMillis() - startTime);
 
 		while (System.currentTimeMillis() <= startLunchtime + startTime ) {
 			openForQuestions();
 		}
-		printLunchMessage(System.currentTimeMillis());
+		printLunchMessage(System.currentTimeMillis() - startTime);
 
 		while (System.currentTimeMillis() < endLunchtime + startTime ) {
 			try {
@@ -53,12 +55,12 @@ public class Manager extends Thread{
 				e.printStackTrace();
 			}
 		}
-		printBackToWorkMessage(System.currentTimeMillis());
+		printBackToWorkMessage(System.currentTimeMillis() - startTime);
 
 		while (System.currentTimeMillis() <= afternoonMeetingStart + startTime ) {
 			openForQuestions();
 		}
-		printAfternoonMeetingMessage(System.currentTimeMillis());
+		printAfternoonMeetingMessage(System.currentTimeMillis() - startTime);
 
 		while (System.currentTimeMillis() <= groupMeetingStart + startTime ) {
 			openForQuestions();
@@ -68,12 +70,11 @@ public class Manager extends Thread{
 			openForQuestions();
 		}
 
-		printDepartureMessage(DEPARTURE_TIME);
+		printDepartureMessage(System.currentTimeMillis() - startTime);
 	}
 	
-	public synchronized void queue(int i) throws InterruptedException {
-		waiting.add(i);
-		System.out.println(waiting);
+	public synchronized void queue(Developer t) throws InterruptedException {
+		waiting.add(t);
 	}
 	
 	private void openForQuestions() {
@@ -85,10 +86,11 @@ public class Manager extends Thread{
 			}
 		} else {
 			try{
-				System.out.println("Answering question!");
+				//System.out.println("Answering question!");
 				Thread.sleep(10*10);
+				waiting.get(0).done();
 				waiting.remove(0);
-				//notify dev to go back to work
+				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
