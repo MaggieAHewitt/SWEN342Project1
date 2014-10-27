@@ -9,6 +9,7 @@ public class main {
 		// TODO Auto-generated method stub
 	
 		final int DEVS = 3;
+		final int questionChance = 4;
 		long time = System.currentTimeMillis();
 		
 		Manager item = new Manager(time, DEVS);

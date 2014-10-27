@@ -5,6 +5,7 @@ import java.util.Random;
 public class Developer extends Thread {
 	
 	private static int EIGHT_HOURS = 60*8*10;
+	private int questionChance;
 	private long startTime = 0;
 	private long timeWorked = 0;
 	
@@ -18,22 +19,24 @@ public class Developer extends Thread {
 	boolean answered;
 	ArrayList<Developer> waiting;
 	
-	public Developer(Manager man, long t, int tn, int en){
+	public Developer(Manager man, long t, int tn, int en, int qc){
 		startTime = t;
 		teamNumber = tn;
 		empNumber = en;
 		this.man = man;
 		answered = false;
+		questionChance = qc;
 		waiting = new ArrayList<Developer>();
 	}
 	
-	public Developer(Manager man, Developer l, long t, int tn, int en){
+	public Developer(Manager man, Developer l, long t, int tn, int en, int qc){
 		startTime = t;
 		teamNumber = tn;
 		empNumber = en;
 		this.man = man;
 		this.lead = l;
 		answered = false;
+		questionChance = qc;
 	}
 	
 	public void run(){
@@ -155,7 +158,7 @@ public class Developer extends Thread {
 	}
 	
 	private Boolean askQuestion(){
-		if(r.nextInt(100) < 4){
+		if(r.nextInt(100) < questionChance){
 			return true;
 		}
 		return false;
