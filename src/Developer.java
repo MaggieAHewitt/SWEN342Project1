@@ -39,6 +39,7 @@ public class Developer extends Thread {
 			}
 		}
 		printArrivalMessage(arrivalTime);
+		man.arrived(empNumber);
 		
 		while(System.currentTimeMillis() <= (lunchStartTime + startTime)){
 			try {
@@ -49,7 +50,6 @@ public class Developer extends Thread {
 						Thread.sleep(10);
 					}
 					answered = false;
-					printAnsweredQuestionMessage(System.currentTimeMillis()-startTime);
 				}
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
@@ -78,7 +78,6 @@ public class Developer extends Thread {
 						Thread.sleep(10);
 					}
 					answered = false;
-					printAnsweredQuestionMessage(System.currentTimeMillis()-startTime);
 				}
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
@@ -115,7 +114,7 @@ public class Developer extends Thread {
 	}
 	
 	private Boolean askQuestion(){
-		if(r.nextInt(100) < 20){
+		if(r.nextInt(100) < 4){
 			return true;
 		}
 		return false;

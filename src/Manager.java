@@ -6,10 +6,12 @@ public class Manager extends Thread{
 	private static final long DEPARTURE_TIME = 9*60*10;
 	private long startTime;
 	private ArrayList<Developer> waiting;
+	private ArrayList<Integer> leadDevs;
 	Status status;
 	
 	public Manager(long time) {
 		waiting = new ArrayList<Developer>();
+		leadDevs = new ArrayList<Integer>();
 		startTime = time;
 	}
 
@@ -23,14 +25,25 @@ public class Manager extends Thread{
 		int groupMeetingStart = 8*60*10;
 
 		printArrivalMessage(ARRIVAL_TIME);
-		
 		//Work until meeting happens
 
-		while (System.currentTimeMillis() <= morningMeetingStart + startTime) {
+		while (leadDevs.size() < 3) {
+			openForQuestions();
+		}
+		printStandupMeetingMessage(System.currentTimeMillis() - startTime);
+		
+		try {
+			Thread.sleep(30*10);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		printBackToWorkMessage(System.currentTimeMillis() - startTime);
+		
+		while (System.currentTimeMillis() <= morningMeetingStart + startTime){
 			openForQuestions();
 		}
 		printMorningMeetingMessage(System.currentTimeMillis() - startTime);
-
+		
 		//At 11AM Meeting
 		while (System.currentTimeMillis() <= morningMeetingEnd + startTime ) {
 			this.status = Status.WORKING;
@@ -77,6 +90,10 @@ public class Manager extends Thread{
 		waiting.add(t);
 	}
 	
+	public synchronized void arrived(Integer i) {
+		leadDevs.add(i);
+	}
+	
 	private void openForQuestions() {
 		if (waiting.isEmpty()) {
 			try {
@@ -86,7 +103,7 @@ public class Manager extends Thread{
 			}
 		} else {
 			try{
-				//System.out.println("Answering question!");
+				printAnswerQMessage(System.currentTimeMillis() - startTime, waiting.get(0).empNumber);
 				Thread.sleep(10*10);
 				waiting.get(0).done();
 				waiting.remove(0);
@@ -119,6 +136,10 @@ public class Manager extends Thread{
 		System.out.println(getTime(time) + "  Manager goes to Lunch!");
 	}
 	
+	private void printStandupMeetingMessage(long time) {
+		System.out.println(getTime(time) + "  Manager meets for standup meeting!");
+	}
+	
 	private void printMorningMeetingMessage (long time) {
 		System.out.println(getTime(time) + "  Manager goes to morning meeting!");
 	}
@@ -135,8 +156,8 @@ public class Manager extends Thread{
 		System.out.println(getTime(time) + "  Manager goes back to work!");
 	}
 
-	private void printAnswerQMessage(long time) {
-		System.out.println(getTime(time) + "  Manager's answering a question!");
+	private void printAnswerQMessage(long time, int i) {
+		System.out.println(getTime(time) + "  Manager's answering Developer " + i + "'s question!");
 	}
 	
 	private void printDepartureMessage(long time) {
