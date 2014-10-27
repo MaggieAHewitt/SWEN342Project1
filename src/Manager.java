@@ -6,17 +6,17 @@ public class Manager extends Thread{
 	private static final long DEPARTURE_TIME = 9*60*10;
 	private long startTime;
 	int Devs;
-	private ArrayList<Developer> waiting;
-	private ArrayList<Developer> leadDevs;
-	private ArrayList<Developer> allDevs;
+	private ArrayList<Employee> waiting;
+	private ArrayList<Employee> leadDevs;
+	private ArrayList<Employee> allDevs;
 	Status status;
 	
 	public Manager(long time, int i) {
 		Devs = i;
-		waiting = new ArrayList<Developer>();
-		leadDevs = new ArrayList<Developer>();
+		waiting = new ArrayList<Employee>();
+		leadDevs = new ArrayList<Employee>();
 		startTime = time;
-		allDevs = new ArrayList<Developer>();
+		allDevs = new ArrayList<Employee>();
 	}
 
 	public void run() {
@@ -103,15 +103,15 @@ public class Manager extends Thread{
 		printDepartureMessage(System.currentTimeMillis() - startTime);
 	}
 	
-	public synchronized void queue(Developer t) throws InterruptedException {
+	public synchronized void queue(Employee t) throws InterruptedException {
 		waiting.add(t);
 	}
 	
-	public synchronized void arrived(Developer i) {
+	public synchronized void arrived(Employee i) {
 		leadDevs.add(i);
 	}
 	
-	public synchronized void groupMeetingArrival(Developer d) {
+	public synchronized void groupMeetingArrival(Employee d) {
 		allDevs.add(d);
 	}
 	
