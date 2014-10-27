@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -13,13 +14,25 @@ public class Developer extends Thread {
 	int empNumber;
 	Status status;
 	Manager man;
+	Developer lead;
 	boolean answered;
+	ArrayList<Developer> waiting;
 	
 	public Developer(Manager man, long t, int tn, int en){
 		startTime = t;
 		teamNumber = tn;
 		empNumber = en;
 		this.man = man;
+		answered = false;
+		waiting = new ArrayList<Developer>();
+	}
+	
+	public Developer(Manager man, Developer l, long t, int tn, int en){
+		startTime = t;
+		teamNumber = tn;
+		empNumber = en;
+		this.man = man;
+		this.lead = l;
 		answered = false;
 	}
 	
@@ -38,13 +51,19 @@ public class Developer extends Thread {
 			}
 		}
 		printArrivalMessage(arrivalTime);
-		man.arrived(this);
 		
+		if(isLead()){
+			man.arrived(this);
+		}
+	
 		while(System.currentTimeMillis() <= (lunchStartTime + startTime)){
 			try {
-				if(askQuestion()){
+				if(isLead()){
+					openForQuestions();
+				}
+				if(!isLead() && askQuestion()){
 					printAskingQuestionMessage(System.currentTimeMillis() - startTime);
-					man.queue(this);
+					lead.queue(this);
 					while(!answered) {
 						Thread.sleep(10);
 					}
@@ -70,9 +89,12 @@ public class Developer extends Thread {
 		
 		while(System.currentTimeMillis() <= (8*60*10 + startTime)){
 			try {
-				if(askQuestion()){
+				if(isLead()){
+					openForQuestions();
+				}
+				if(!isLead() && askQuestion()){
 					printAskingQuestionMessage(System.currentTimeMillis() - startTime);
-					man.groupMeetingArrival(this);
+					lead.queue(this);
 					while(!answered) {
 						Thread.sleep(10);
 					}
@@ -86,9 +108,12 @@ public class Developer extends Thread {
 		
 		while(System.currentTimeMillis() <= (leaveTime + startTime)){
 			try {
-				if(askQuestion()){
+				if(isLead()){
+					openForQuestions();
+				}
+				if(!isLead() && askQuestion()){
 					printAskingQuestionMessage(System.currentTimeMillis() - startTime);
-					man.queue(this);
+					lead.queue(this);
 					while(!answered) {
 						Thread.sleep(10);
 					}
@@ -135,6 +160,19 @@ public class Developer extends Thread {
 		}
 		return false;
 	}
+	private synchronized Boolean canAnswer(){
+		if(r.nextInt(100) < 50){
+			return true;
+		}
+		return false;
+	}
+	
+	private synchronized Boolean isLead(){
+		if(empNumber == 1){
+			return true;
+		}
+		return false;
+	}
 
 	private String getTime(long time){
 		String zero = "";
@@ -167,6 +205,40 @@ public class Developer extends Thread {
 	}
 	private void printAnsweredQuestionMessage(long time){
 		System.out.println("Developer " + teamNumber + "" + empNumber + " is finished asking questions at " + getTime(time));
+	}
+	private void printAnswerQMessage(long time, int i) {
+		System.out.println(getTime(time) + "  Team lead " + teamNumber + " answered Developer " + i + "'s question!");
+	}
+	
+	public synchronized void queue(Developer t) throws InterruptedException {
+		waiting.add(t);
+	}
+	private void openForQuestions() {
+		if (waiting.isEmpty()) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try{
+				if(canAnswer()){
+					printAnswerQMessage(System.currentTimeMillis() - startTime, waiting.get(0).empNumber);
+					Thread.sleep(10*10);
+					waiting.get(0).done();
+					waiting.remove(0);
+				}else{
+					printAskingQuestionMessage(System.currentTimeMillis() - startTime);
+					man.queue(this);
+					while(!answered) {
+						Thread.sleep(10);
+					}
+					answered = false;
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
